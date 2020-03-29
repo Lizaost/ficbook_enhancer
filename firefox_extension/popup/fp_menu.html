@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="fp_menu.css"/>
+</head>
+
+<body>
+<div id="popup-content">
+    <h1 id="popup-title">Ficbook+</h1>
+    <div class="icon icon-information-outline" id="info_icon">
+    </div>
+    <h2 class="popup-subtitle" id="auto-format-styles_title">Автоформатирование</h2>
+    <div id="auto-format-styles">
+        <div class="button_format format_style active" id="format_style-book">
+            <img src="../images/format_style-book.png" alt="">
+            <span class="format-style-label">Книга</span>
+        </div>
+        <div class="button_format format_style" id="format_style-web1">
+            <img src="../images/format_style-web1.png" alt="">
+            <span class="format-style-label">Web 1</span>
+        </div>
+        <div class="button_format format_style" id="format_style-web2">
+            <img src="../images/format_style-web2.png" alt="">
+            <span class="format-style-label">Web 2</span>
+        </div>
+    </div>
+    <ul id="auto-format-settings">
+        <li class="auto-format-settings-item">
+            <input type="checkbox" id="format-on-page-load" name="format-on-page-load" value="yes">
+            <label for="format-on-page-load">Автоматически форматировать при открытии фанфика</label>
+        </li>
+        <li class="auto-format-settings-item">
+            <input type="checkbox" id="fix-punctuation-spaces" name="fix-punctuation-spaces" value="yes">
+            <label for="fix-punctuation-spaces">Исправлять пробелы вокруг знаков препинания</label>
+        </li>
+        <li class="auto-format-settings-item">
+            <input type="checkbox" id="fix-punctuation-dialogs" name="fix-punctuation-dialogs" value="yes">
+            <label for="fix-punctuation-dialogs">Исправлять оформление диалогов</label>
+        </li>
+        <li class="auto-format-settings-item">
+            <input type="checkbox" id="fix-lapslock" name="fix-lapslock" value="yes">
+            <label for="fix-lapslock">Исправлять лапслок</label>
+        </li>
+    </ul>
+    <div id="read_full_button_wrapper">
+        <button class="button" id="read_full_fic">Открыть фанфик целиком</button>
+    </div>
+</div>
+<div id="error-content" class="hidden">
+    <p>Ficbook+ load on this web page.</p>
+    <p>Try a different page.</p>
+</div>
+<script src="fp_menu.js"></script>
+</body>
+
+</html>

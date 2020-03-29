@@ -1,12 +1,12 @@
 {
 
   "description": "Adds a better dark theme and auto format for ficbook.net",
-  "manifest_version": 1,
+  "manifest_version": 2,
   "name": "Ficbook+",
   "version": "1.0",
-  "homepage_url": "https://github.com/mdn/webextensions-examples/tree/master/beastify",
+  "homepage_url": "https://github.com/Lizaost/ficbook_plus",
   "icons": {
-    "48": "icons/ficbook_plus-48.png"
+    "48": "icons/ficbook_plus-48.jpg"
   },
 
   "permissions": [
@@ -14,14 +14,14 @@
   ],
 
   "browser_action": {
-    "default_icon": "icons/ficbook_plus-32.png",
+    "default_icon": "icons/ficbook_plus-32.jpg",
     "theme_icons": [{
-      "light": "icons/ficbook_plus-32-light.png",
-      "dark": "icons/ficbook_plus-32.png",
+      "light": "icons/ficbook_plus-32.jpg",
+      "dark": "icons/ficbook_plus-32.jpg",
       "size": 32
     }],
     "default_title": "Ficbook+",
-    "default_popup": "popup/ficbook_plus_menu.html"
+    "default_popup": "popup/fp_menu.html"
   },
 
   "web_accessible_resources": [
