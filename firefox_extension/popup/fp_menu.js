@@ -50,6 +50,10 @@ function listenForClicks() {
         if ((e.target.classList.contains("format_style") && !e.target.classList.contains("active"))
             || (e.target.parentElement.classList.contains("format_style") &&
                 !e.target.parentElement.classList.contains("active"))) {
+            let activeModes = document.getElementsByClassName("active");
+            if (activeModes.length >= 1) {
+                activeModes[0].classList.remove("active");
+            }
             e.target.parentElement.classList.add("active");
             formatStyle = e.target.parentElement.id.substr("format_style-".length);
             browser.tabs.query({active: true, currentWindow: true})
