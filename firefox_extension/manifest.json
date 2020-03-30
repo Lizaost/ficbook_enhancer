@@ -23,6 +23,16 @@
     "default_title": "Ficbook+",
     "default_popup": "popup/fp_menu.html"
   },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.ficbook.net/printfic/*?ficbook_plus_read_full_fic"
+      ],
+      "js": [
+        "content_scripts/full_fic_reader.js"
+      ]
+    }
+  ],
 
   "web_accessible_resources": [
     "images/*.jpg"
