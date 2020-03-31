@@ -43,7 +43,7 @@ function loadStyles() {
  * Add fic content panel
  */
 function addFicContentPanel() {
-    if (document.getElementById("fic_contents_list")) {
+    if (document.getElementById("fic_contents_list") == null) {
         let ficContentList = document.createElement("ol");
         ficContentList.id = "fic_contents_list";
         for (let i = 1; i <= numberOfChapters; i++) {
