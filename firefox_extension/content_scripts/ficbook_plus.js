@@ -18,6 +18,7 @@
         return;
     }
 
+
     /**
      * Format on page load if formatOnPageLoad is set to true in storage
      */
@@ -38,7 +39,6 @@
 
             let gettingFormatStyle = browser.storage.local.get("ficFormatStyle");
             gettingFormatStyle.then(onGotFormatStyle, onErrorFormatStyle).then(formatFic);
-            //formatFic("");
             applyTextFixes();
         } else {
             console.log("Format on page load is off");
@@ -90,7 +90,6 @@
         result = regexD.exec(resText);
         while (result) {
             let index = result.index;
-            //console.log(result.index, resText.slice(result.index-2, result.index +2));
             resText = resText.substring(0, index + 1) + " " + resText.substring(index + 2);
             result = regexD.exec(resText);
         }
@@ -100,7 +99,6 @@
         result = regexE.exec(resText);
         while (result) {
             let index = result.index;
-            //console.log("E => " + result.index, resText.slice(result.index-2, result.index +2));
             resText = resText.substring(0, index + 1) + resText.substring(index + 3);
             result = regexE.exec(resText);
         }
@@ -110,7 +108,6 @@
         result = regexF.exec(resText);
         while (result) {
             let index = result.index;
-            //console.log(result.index, resText.slice(result.index-2, result.index +2));
             resText = resText.substring(0, index) + resText.substring(index + 1);
             result = regexF.exec(resText);
         }
@@ -123,7 +120,6 @@
      */
     function fixLapslock(text) {
         let resText = text;
-        //Sentence may start with not a alphabet symbol.
         resText = text.replace(/([a-z]|[A-Z]|[а-я]|[А-Я]|\n).+?[.?!…](\s|$)/gi, function (txt) {
             return txt.charAt(0).toUpperCase() + txt.substr(1);
         });
@@ -147,8 +143,6 @@
         for (let i = 0; i < numberOfLines; i++) {
             //if it a part of dialog
             if (textLines[i].match(isDialogLineRegex)) {
-                //alert(textLines[i] + "\nIt is a line of dialog");
-
                 //replace double hyphen by dash
                 textLines[i] = textLines[i].replace("--", "—");
 
@@ -188,13 +182,10 @@
      */
     function addEmptyLines(text) {
         let resText = text;
-        //let textLines = text.split("\n");
-        //let numberOfLines = textLines.length;
         let regex = /.\n/gi;
         result = regex.exec(resText);
         while (result) {
             let index = result.index;
-            //console.log(result.index, resText.slice(result.index-2, result.index +2));
             if (!resText[index + 2].match(/\n/)) {
                 resText = resText.substring(0, index + 1) + "\n" + resText.substring(index + 1);
             }
@@ -209,16 +200,7 @@
      */
     function removeEmptyLines(text) {
         let resText = text;
-        //let textLines = text.split("\n");
-        //let numberOfLines = textLines.length;
         let regex = /\n\n/gi;
-        // result = regex.exec(resText);
-        // while (result) {
-        //     let index = result.index;
-        //     //console.log(result.index, resText.slice(result.index-2, result.index +2));
-        //     resText = resText.substring(0, index+1) + "\n" + resText.substring(index+1);
-        //     result = regex.exec(resText);
-        // }
         resText = resText.replace(regex, "\n");
         console.log("removed empty lines");
         return resText;
@@ -229,13 +211,10 @@
      */
     function addParagraphIndents(text) {
         let resText = text;
-        //let textLines = text.split("\n[. ]");
-        //let numberOfLines = textLines.length;
         let regex = /\n/gi;
         result = regex.exec(resText);
         while (result) {
             let index = result.index;
-            //console.log(result.index, resText.slice(result.index-2, result.index +2));
             if (!resText[index + 1].match(/[\n\t]/)) {
                 resText = resText.substring(0, index + 1) + "\t" + resText.substring(index + 1);
             }
@@ -253,16 +232,7 @@
      */
     function removeParagraphIndents(text) {
         let resText = text;
-        //let textLines = text.split("\n[. ]");
-        //let numberOfLines = textLines.length;
         let regex = /\t/gi;
-        // result = regex.exec(resText);
-        // while (result) {
-        //     let index = result.index;
-        //     //console.log(result.index, resText.slice(result.index-2, result.index +2));
-        //     resText = resText.substring(0, index + 1) + resText.substring(index + 3);
-        //     result = regex.exec(resText);
-        // }
         resText = resText.replace(regex, "");
         console.log("removed paragraph indents");
         return resText;
@@ -272,35 +242,32 @@
      * Given a format style format fic text according to this style.
      * Saves original fic text into storage as originalFicText.
      */
+    let ficFormatted = false;
+
     function formatFic(formatStyle) {
         console.log("FormatFic function is run with formatStyle=\"" + formatStyle + "\"");
-        // alert("Formatted text according to " + formatStyle + " style");
-        // let testText = "first line\nsecond line without empty line\n\nthird line with empty line" +
-        //     "\n\tline with indent\n\n\tline with empty line and intends";
-        // alert("Add empty lines\n" + testText + "\n--------\n" + addEmptyLines(testText));
-        // alert("Remove empty lines\n" + testText + "\n--------\n" + removeEmptyLines(testText));
-        // alert("Add paragraph indents\n" + testText + "\n--------\n" + addParagraphIndents(testText));
-        // alert("Remove paragraph indents\n" + testText + "\n--------\n" + removeParagraphIndents(testText));
         let ficText = document.getElementById("content").innerHTML;
-        browser.storage.local.set({ficTextSaved: ficText});
+        if (formatStyle === "book" || formatStyle === "web1" || formatStyle === "web2") {
+            if (!ficFormatted) {
+                browser.storage.local.set({ficTextSaved: ficText});
+            }
+            ficFormatted = true;
+        }
         console.log("Saved original fic text to storage");
         switch (formatStyle) {
             case "book":
-                // alert("formatting like a book");
                 browser.storage.local.set({ficFormatStyle: "book"});
                 ficText = removeEmptyLines(ficText);
                 ficText = addParagraphIndents(ficText);
                 console.log("Formated fic with book style");
                 break;
             case  "web1":
-                // alert("formatting like a web without indents");
                 browser.storage.local.set({ficFormatStyle: "web1"});
                 ficText = addEmptyLines(ficText);
                 ficText = removeParagraphIndents(ficText);
                 console.log("Formatted fic with web1 style");
                 break;
             case "web2":
-                // alert("formatting like a web with intends");
                 browser.storage.local.set({ficFormatStyle: "web2"});
                 ficText = addEmptyLines(ficText);
                 ficText = addParagraphIndents(ficText);
@@ -335,6 +302,7 @@
      */
     function applyTextFixes() {
         console.log("Started applying text fixes");
+
         // alert("Applied text fixes");
         function onGotSpacesFix(item) {
             console.log("Successfully got item.fixSpacesAroundPunctuation from storage");
@@ -375,7 +343,6 @@
             console.log("fixLapslock = " + item.fixLapslock);
             if (item.fixLapslock) {
                 let ficText = document.getElementById("content").innerHTML;
-                //alert(ficText);
                 document.getElementById("content").innerHTML = fixLapslock(ficText);
             }
         }
@@ -388,8 +355,6 @@
         let gettingLapslockFix = browser.storage.local.get("fixLapslock");
         gettingLapslockFix.then(onGotLapslockFix, onErrorLapslockFix);
         console.log("end of ApplyTextFixes function");
-        // fixSpacesAroundPunctuationMarks();
-        // fixDialogsPunctuation();
     }
 
     /**
@@ -397,11 +362,14 @@
      * Uses original fic text saved in storage as originalFicText.
      */
     function resetFicFormat() {
-        //alert("Reset fic format style");
         function onGot(item) {
-            //alert(item);
-            document.getElementById("content").innerHTML = item.ficTextSaved;
-            console.log("Reset fic format");
+            if (ficFormatted) {
+                document.getElementById("content").innerHTML = item.ficTextSaved;
+                console.log("Reset fic format");
+            } else {
+                console.log("Fic is not formatted");
+            }
+            ficFormatted = false;
         }
 
         function onError(item) {
@@ -419,20 +387,13 @@
      */
 
     function openFullFicReader() {
-        //alert("Open full fic reader");
-        //alert(window.location.href);
         let currentSite = window.location.hostname;
         let isFicbook = currentSite.search("ficbook.net") >= 0;
         let currentPage = window.location.pathname;
         let parameters = window.location.search;
-        //alert(currentSite + "\n" + currentPage + "\n\n" + parameters);
-        if (!isFicbook) {
-            //alert("It is not a ficbook");
-        } else {
+        if (isFicbook) {
             let fic_id = currentPage.split("/")[2];
-            //let url = window.location.href.replace("readfic", "printfic") + "?ficbook_plus_read_full_fic";
             let url = "https://" + currentSite + "/printfic/" + fic_id + "?ficbook_plus_read_full_fic";
-            //alert("Redirecting to " + url);
             window.location = url;
         }
     }

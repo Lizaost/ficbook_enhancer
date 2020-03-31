@@ -43,19 +43,21 @@ function loadStyles() {
  * Add fic content panel
  */
 function addFicContentPanel() {
-    let ficContentList = document.createElement("ol");
-    ficContentList.id = "fic_contents_list";
-    for (let i = 1; i <= numberOfChapters; i++) {
-        let li = document.createElement("li");
-        let a = document.createElement("a");
-        a.href = "#chapter_" + i;
-        let chapterHeader = document.getElementById("chapter_" + i + "_title");
-        a.text = chapterHeader.textContent;
-        li.appendChild(a);
-        ficContentList.appendChild(li);
+    if (document.getElementById("fic_contents_list")) {
+        let ficContentList = document.createElement("ol");
+        ficContentList.id = "fic_contents_list";
+        for (let i = 1; i <= numberOfChapters; i++) {
+            let li = document.createElement("li");
+            let a = document.createElement("a");
+            a.href = "#chapter_" + i;
+            let chapterHeader = document.getElementById("chapter_" + i + "_title");
+            a.text = chapterHeader.textContent;
+            li.appendChild(a);
+            ficContentList.appendChild(li);
+        }
+        let ficTextWrapper = document.getElementById("fic_text");
+        document.body.insertBefore(ficContentList, ficTextWrapper);
     }
-    let ficTextWrapper = document.getElementById("fic_text");
-    document.body.insertBefore(ficContentList, ficTextWrapper);
 }
 
 /**
