@@ -1,6 +1,5 @@
 {
-
-  "description": "Adds a better dark theme and auto format for ficbook.net",
+  "description": "Adds a better auto format and full fic reader for ficbook.net",
   "manifest_version": 2,
   "name": "Ficbook+",
   "version": "1.0",
