@@ -83,6 +83,18 @@
     }
 
     /**
+     * Fix lapslock by capitalizing first word of each sentence.
+     */
+    function fixLapslock(text) {
+        let resText = text;
+        //Sentence may start with not a alphabet symbol.
+        resText = text.replace(/([a-z]|[а-я]).+?[\.\?\!](\s|$)/gi, function (txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+        return resText;
+    }
+
+    /**
      * Add empty line between paragraphs is there is no empty line
      */
     function addEmptyLines(text) {
@@ -246,7 +258,6 @@
      * then call applyTextFixes()".
      */
     browser.runtime.onMessage.addListener((message) => {
-        //alert("onMessage listener: Message=" + message);
         if (message.command === "openFullFicReader") {
             openFullFicReader();
         } else {

@@ -6,7 +6,7 @@
   "version": "1.0",
   "homepage_url": "https://github.com/Lizaost/ficbook_plus",
   "icons": {
-    "48": "icons/ficbook_plus-48.jpg"
+    "48": "icons/ficbook_plus_icon_48.png"
   },
 
   "permissions": [
@@ -14,10 +14,10 @@
   ],
 
   "browser_action": {
-    "default_icon": "icons/ficbook_plus-32.jpg",
+    "default_icon": "icons/ficbook_plus_icon_32.png",
     "theme_icons": [{
-      "light": "icons/ficbook_plus-32.jpg",
-      "dark": "icons/ficbook_plus-32.jpg",
+      "light": "icons/ficbook_plus_icon_32.png",
+      "dark": "icons/ficbook_plus_icon_32.png",
       "size": 32
     }],
     "default_title": "Ficbook+",
