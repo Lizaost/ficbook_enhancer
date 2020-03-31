@@ -233,12 +233,8 @@
             alert("It is not a ficbook");
         } else {
             let fic_id = currentPage.split("/")[2];
-            if (currentPage.search("printfic") >= 0) {
-                alert("It is a print version of fic with id " + fic_id);
-            } else if (currentPage.search("readfic") >= 0) {
-                alert("It is a standard version of fic with id " + fic_id);
-            }
-            let url = window.location.href.replace("readfic", "printfic") + "?ficbook_plus_read_full_fic";
+            //let url = window.location.href.replace("readfic", "printfic") + "?ficbook_plus_read_full_fic";
+            let url = "https://" + currentSite + "/printfic/" + fic_id + "?ficbook_plus_read_full_fic";
             //alert("Redirecting to " + url);
             window.location = url;
         }
