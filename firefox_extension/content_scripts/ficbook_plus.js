@@ -19,14 +19,50 @@
     }
 
     /**
+     * Format on page load if formatOnPageLoad is set to true in storage
+     */
+    function onGotFormatOnLoad(item) {
+        console.log("Successfully got formatOnPageLoad from storage");
+        console.log(item.formatOnPageLoad);
+        if (item.formatOnPageLoad) {
+
+            function onGotFormatStyle(item) {
+                console.log("Got format style from storage");
+                return item.ficFormatStyle;
+            }
+
+            function onErrorFormatStyle(item) {
+                console.log("Can't get format style from storage");
+                return "";
+            }
+
+            let gettingFormatStyle = browser.storage.local.get("ficFormatStyle");
+            gettingFormatStyle.then(onGotFormatStyle, onErrorFormatStyle).then(formatFic);
+            //formatFic("");
+            applyTextFixes();
+        } else {
+            console.log("Format on page load is off");
+        }
+    }
+
+    function onErrorFormatOnLoad(item) {
+        console.log("Can't get formatOnPageLoad from storage");
+        return false;
+    }
+
+    let gettingFormatOnLoad = browser.storage.local.get("formatOnPageLoad");
+    gettingFormatOnLoad.then(onGotFormatOnLoad, onErrorFormatOnLoad);
+
+    /**
      * Fix incorrectly placed spaces around period, comma, semicolon, question mark,
      * exclamation mark, ellipsis points, hyphen, brackets and quotation marks
      * Return fixed text.
      */
     function fixSpacesAroundPunctuationMarks(text) {
+        console.log("removing unnecessary spaces around punctuation marks");
         let resText = text;
         //no space before period, comma, semicolon, question mark, exclamation mark and ellipsis points
-        let regexA = / [.|?,!…]/gi;
+        let regexA = / [.?,!…]/gi;
         let result = regexA.exec(resText);
         while (result) {
             let index = result.index;
@@ -36,7 +72,7 @@
         }
 
         //A space after punctuation marks
-        let regexB = /([.|?,!…])\S/gi;
+        let regexB = /([.?,!…])\S/gi;
         result = regexB.exec(resText);
         while (result) {
             let index = result.index;
@@ -78,7 +114,7 @@
             resText = resText.substring(0, index) + resText.substring(index + 1);
             result = regexF.exec(resText);
         }
-
+        console.log("Removed unnecessary spaces");
         return resText;
     }
 
@@ -88,10 +124,63 @@
     function fixLapslock(text) {
         let resText = text;
         //Sentence may start with not a alphabet symbol.
-        resText = text.replace(/([a-z]|[а-я]).+?[\.\?\!](\s|$)/gi, function (txt) {
-            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        resText = text.replace(/([a-z]|[A-Z]|[а-я]|[А-Я]|\n).+?[.?!…](\s|$)/gi, function (txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1);
         });
+        resText = (resText.split("\n").map((txt) => (txt.charAt(0).toUpperCase() + txt.substr(1)))).join("\n");
+        let regex = /([a-z]|[A-Z]|[а-я]|[А-Я]|\n).+?[.?,!…](\s|$)/gi
+        console.log("Fixed lapslock");
         return resText;
+    }
+
+    /**
+     * Fixed incorrect dialog punctuation.
+     * Uses russian language punctuation rules.
+     * IMPORTANT - this function must be run after the fixSpacesAroundPunctuationMarks function
+     * because some of changes of this function may be overwritten
+     */
+    function fixDialogsPunctuation(text) {
+        let textLines = text.split("\n");
+        let numberOfLines = textLines.length;
+        let isDialogLineRegex = /^( )?(\-|–)( )?([a-z]|[A-Z]|[а-я]|[А-Я]).+?[.?,!…]($)/gi;
+        //For each line of text
+        for (let i = 0; i < numberOfLines; i++) {
+            //if it a part of dialog
+            if (textLines[i].match(isDialogLineRegex)) {
+                //alert(textLines[i] + "\nIt is a line of dialog");
+
+                //replace double hyphen by dash
+                textLines[i] = textLines[i].replace("--", "—");
+
+                //replace hyphen(-) and minus(−) with dash(—) at the start of sentence
+                //and remove initial spaces
+                textLines[i] = textLines[i].replace(/^( )*([−\-—])( )*/gi, "— ");
+
+                //(A: - B.), (- B, - a.), (- B, - a, - b)
+                //(,-) => (, - )
+                //Replace hyphen and minus by dash, add necessary spaces
+                let regexAuthorWordsWithHyphenMinusDash = /([.?,!…;])( )?([−\-—])( )?/gi;
+                //In the case below (with colon) dialog line starts on the next line, so there is no need
+                //to work with this case differently
+                // let regexAuthorWordsWithColon = /:( )?([−\-—])( )?/gi;
+                let result = regexAuthorWordsWithHyphenMinusDash.exec(textLines[i]);
+                while (result) {
+                    let index = result.index;
+                    let hmcIndex = result[0].search(/([−\-—])/);
+                    textLines[i] = textLines[i].substring(0, index + hmcIndex) + "—" + textLines[i].substring(index + hmcIndex + 1);
+                    if (textLines[i][index + hmcIndex - 1] != " ") {
+                        textLines[i] = textLines[i].substring(0, index + hmcIndex) + " " + textLines[i].substring(index + hmcIndex);
+                        hmcIndex++; //since a symbol was added before
+                    }
+                    if (textLines[i][index + hmcIndex + 1] != " ") {
+                        textLines[i] = textLines[i].substring(0, index + hmcIndex + 1) + " " + textLines[i].substring(index + hmcIndex + 1);
+                    }
+                    result = regexAuthorWordsWithHyphenMinusDash.exec(textLines[i]);
+                }
+            }
+        }
+        console.log("Fixed dialogs punctuation");
+        return textLines.join("\n");
     }
 
     /**
@@ -111,7 +200,7 @@
             }
             result = regex.exec(resText);
         }
-        // alert("added empty lines");
+        console.log("added empty lines");
         return resText;
     }
 
@@ -131,7 +220,7 @@
         //     result = regex.exec(resText);
         // }
         resText = resText.replace(regex, "\n");
-        // alert("removed empty lines");
+        console.log("removed empty lines");
         return resText;
     }
 
@@ -155,7 +244,7 @@
         if (!resText.startsWith("\t")) {
             resText = "\t" + resText;
         }
-        // alert("added paragraph indents");
+        console.log("added paragraph indents");
         return resText;
     }
 
@@ -175,7 +264,7 @@
         //     result = regex.exec(resText);
         // }
         resText = resText.replace(regex, "");
-        // alert("removed paragraph indents");
+        console.log("removed paragraph indents");
         return resText;
     }
 
@@ -184,6 +273,7 @@
      * Saves original fic text into storage as originalFicText.
      */
     function formatFic(formatStyle) {
+        console.log("FormatFic function is run with formatStyle=\"" + formatStyle + "\"");
         // alert("Formatted text according to " + formatStyle + " style");
         // let testText = "first line\nsecond line without empty line\n\nthird line with empty line" +
         //     "\n\tline with indent\n\n\tline with empty line and intends";
@@ -192,24 +282,50 @@
         // alert("Add paragraph indents\n" + testText + "\n--------\n" + addParagraphIndents(testText));
         // alert("Remove paragraph indents\n" + testText + "\n--------\n" + removeParagraphIndents(testText));
         let ficText = document.getElementById("content").innerHTML;
+        browser.storage.local.set({ficTextSaved: ficText});
+        console.log("Saved original fic text to storage");
         switch (formatStyle) {
             case "book":
                 // alert("formatting like a book");
+                browser.storage.local.set({ficFormatStyle: "book"});
                 ficText = removeEmptyLines(ficText);
                 ficText = addParagraphIndents(ficText);
+                console.log("Formated fic with book style");
                 break;
             case  "web1":
                 // alert("formatting like a web without indents");
+                browser.storage.local.set({ficFormatStyle: "web1"});
                 ficText = addEmptyLines(ficText);
                 ficText = removeParagraphIndents(ficText);
+                console.log("Formatted fic with web1 style");
                 break;
             case "web2":
                 // alert("formatting like a web with intends");
+                browser.storage.local.set({ficFormatStyle: "web2"});
                 ficText = addEmptyLines(ficText);
                 ficText = addParagraphIndents(ficText);
+                console.log("Formatted fic with web2 style");
                 break;
         }
-        document.getElementById("content").innerHTML = fixSpacesAroundPunctuationMarks(ficText);
+        document.getElementById("content").innerHTML = ficText;
+    }
+
+    /**
+     * Returns setting value saved in storage or false by default
+     */
+    function getSettingFromStorage(settingName) {
+        function onGot(item) {
+            console.log("Successfully got the item (" + settingName + ") from storage");
+            document.getElementById("content").innerHTML = item.ficTextSaved;
+        }
+
+        function onError(item) {
+            console.log("Can't get the item (" + settingName + ") from storage");
+            return false;
+        }
+
+        let gettingFicText = browser.storage.local.get(settingName);
+        gettingFicText.then(onGot, onError);
     }
 
     /**
@@ -218,7 +334,62 @@
      * as activeFixes.
      */
     function applyTextFixes() {
+        console.log("Started applying text fixes");
         // alert("Applied text fixes");
+        function onGotSpacesFix(item) {
+            console.log("Successfully got item.fixSpacesAroundPunctuation from storage");
+            console.log("item.fixSpacesAroundPunctuation = " + item.fixSpacesAroundPunctuation)
+            if (item.fixSpacesAroundPunctuation) {
+                let ficText = document.getElementById("content").innerHTML;
+                document.getElementById("content").innerHTML = fixSpacesAroundPunctuationMarks(ficText);
+            }
+        }
+
+        function onErrorSpacesFix(item) {
+            console.log("Can't get fixSpacesAroundPunctuation from storage");
+            return false;
+        }
+
+        let gettingSpacesFix = browser.storage.local.get("fixSpacesAroundPunctuation");
+        gettingSpacesFix.then(onGotSpacesFix, onErrorSpacesFix);
+
+        function onGotDialogsFix(item) {
+            console.log("Successfully got fixDialogsPunctuation from storage");
+            console.log("fixDialogsPunctuation = " + item.fixDialogsPunctuation);
+            if (item.fixDialogsPunctuation) {
+                let ficText = document.getElementById("content").innerHTML;
+                document.getElementById("content").innerHTML = fixDialogsPunctuation(ficText);
+            }
+        }
+
+        function onErrorDialogsFix(item) {
+            console.log("Can't get fixDialogsPunctuation from storage");
+            return false;
+        }
+
+        let gettingDialogsFix = browser.storage.local.get("fixDialogsPunctuation");
+        gettingDialogsFix.then(onGotDialogsFix, onErrorDialogsFix);
+
+        function onGotLapslockFix(item) {
+            console.log("Successfully got fixLapslock from storage");
+            console.log("fixLapslock = " + item.fixLapslock);
+            if (item.fixLapslock) {
+                let ficText = document.getElementById("content").innerHTML;
+                //alert(ficText);
+                document.getElementById("content").innerHTML = fixLapslock(ficText);
+            }
+        }
+
+        function onErrorLapslockFix(item) {
+            console.log("Can't get fixLapslock from storage");
+            return false;
+        }
+
+        let gettingLapslockFix = browser.storage.local.get("fixLapslock");
+        gettingLapslockFix.then(onGotLapslockFix, onErrorLapslockFix);
+        console.log("end of ApplyTextFixes function");
+        // fixSpacesAroundPunctuationMarks();
+        // fixDialogsPunctuation();
     }
 
     /**
@@ -226,7 +397,21 @@
      * Uses original fic text saved in storage as originalFicText.
      */
     function resetFicFormat() {
-        alert("Reset fic format style");
+        //alert("Reset fic format style");
+        function onGot(item) {
+            //alert(item);
+            document.getElementById("content").innerHTML = item.ficTextSaved;
+            console.log("Reset fic format");
+        }
+
+        function onError(item) {
+            console.log("Error reseting fic format");
+        }
+
+        let gettingFicText = browser.storage.local.get("ficTextSaved");
+        gettingFicText.then(onGot, onError);
+        browser.storage.local.set({ficFormatStyle: ""});
+        console.log("Set fic format styl to empty string in settings");
     }
 
     /**
@@ -242,7 +427,7 @@
         let parameters = window.location.search;
         //alert(currentSite + "\n" + currentPage + "\n\n" + parameters);
         if (!isFicbook) {
-            alert("It is not a ficbook");
+            //alert("It is not a ficbook");
         } else {
             let fic_id = currentPage.split("/")[2];
             //let url = window.location.href.replace("readfic", "printfic") + "?ficbook_plus_read_full_fic";
@@ -258,6 +443,7 @@
      * then call applyTextFixes()".
      */
     browser.runtime.onMessage.addListener((message) => {
+        console.log("Received message with command=" + message.command);
         if (message.command === "openFullFicReader") {
             openFullFicReader();
         } else {
