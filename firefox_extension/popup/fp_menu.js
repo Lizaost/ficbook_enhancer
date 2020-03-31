@@ -136,10 +136,52 @@ function reportExecuteScriptError(error) {
 }
 
 /**
+ * Restore state of control elements from storage
+ */
+function restoreMenuState() {
+    //alert("restoring menu state");
+    let gettingMenuState = browser.storage.local.get();
+    gettingMenuState.then(onGot, onError);
+}
+
+function onGot(item) {
+    console.log("Successfully restored menu state from storage");
+    switch (item.ficFormatStyle) {
+        case "book":
+            document.getElementById("format_style-book").classList.add("active");
+            break;
+        case "web1":
+            document.getElementById("format_style-web1").classList.add("active");
+            break;
+        case "web2":
+            document.getElementById("format_style-web2").classList.add("active");
+            break;
+    }
+    if (item.formatOnPageLoad) {
+        document.getElementById("format-on-page-load").click();
+    }
+    if (item.fixSpacesAroundPunctuation) {
+        document.getElementById("fix-punctuation-spaces").click();
+    }
+    if (item.fixDialogsPunctuation) {
+        document.getElementById("fix-dialogs-punctuation").click();
+    }
+    if (item.fixLapslock) {
+        document.getElementById("fix-lapslock").click();
+    }
+}
+
+function onError(item) {
+    console.log("Can't restore menu state from storage");
+}
+
+
+/**
  * When the popup loads, inject a content script into the active tab,
  * and add a click handler.
  * If we couldn't inject the script, handle the error.
  */
 browser.tabs.executeScript({file: "/content_scripts/ficbook_plus.js"})
+    .then(restoreMenuState)
     .then(listenForClicks)
     .catch(reportExecuteScriptError);

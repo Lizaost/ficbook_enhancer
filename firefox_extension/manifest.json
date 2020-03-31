@@ -32,6 +32,14 @@
       "js": [
         "content_scripts/full_fic_reader.js"
       ]
+    },
+    {
+      "matches": [
+        "*://*.ficbook.net/readfic/*"
+      ],
+      "js": [
+        "content_scripts/ficbook_plus.js"
+      ]
     }
   ],
 
