@@ -26,7 +26,7 @@
   "content_scripts": [
     {
       "matches": [
-        "*://*.ficbook.net/printfic/*?ficbook_plus_read_full_fic"
+        "*://*.ficbook.net/printfic/*"
       ],
       "js": [
         "content_scripts/full_fic_reader.js"
@@ -43,7 +43,9 @@
   ],
 
   "web_accessible_resources": [
-    "images/*.jpg"
+    "images/*.jpg",
+    "icons/*.png",
+    "styles/*.css"
   ]
 
 }

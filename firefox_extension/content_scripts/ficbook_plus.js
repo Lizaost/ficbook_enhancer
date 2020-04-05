@@ -215,8 +215,11 @@
         result = regex.exec(resText);
         while (result) {
             let index = result.index;
+            console.log(resText.substring(index - 20, index + 20));
             if (!resText[index + 1].match(/[\n\t]/)) {
+                console.log("added tab");
                 resText = resText.substring(0, index + 1) + "\t" + resText.substring(index + 1);
+                //resText = resText.substring(0, index + 1) + "    " + resText.substring(index + 1);
             }
             result = regex.exec(resText);
         }
@@ -233,6 +236,7 @@
     function removeParagraphIndents(text) {
         let resText = text;
         let regex = /\t/gi;
+        //let regex = / {4}/gi;
         resText = resText.replace(regex, "");
         console.log("removed paragraph indents");
         return resText;
@@ -245,11 +249,30 @@
     let ficFormatted = false;
 
     function formatFic(formatStyle) {
+        formatFicText(formatStyle, null);
+    }
+
+    function formatFicText(formatStyle, text) {
         console.log("FormatFic function is run with formatStyle=\"" + formatStyle + "\"");
-        let ficText = document.getElementById("content").innerHTML;
+        let ficText;
+        if (text === null) {
+            ficText = document.getElementById("content").innerHTML;
+        } else {
+            ficText = text;
+        }
+        // if (window.location.href.search(/printfic/) >= 0){
+        //     ficText = document.getElementById("fic_text").innerHTML;
+        // } else {
+        //     ficText = document.getElementById("content").innerHTML;
+        // }
+        console.log(ficText);
         if (formatStyle === "book" || formatStyle === "web1" || formatStyle === "web2") {
             if (!ficFormatted) {
-                browser.storage.local.set({ficTextSaved: ficText});
+                if (text === null) {
+                    browser.storage.local.set({ficTextSaved: ficText});
+                } else {
+                    browser.storage.local.set({ficTextSaved: document.getElementById("fic_text").innerHTML});
+                }
             }
             ficFormatted = true;
         }
@@ -274,7 +297,16 @@
                 console.log("Formatted fic with web2 style");
                 break;
         }
-        document.getElementById("content").innerHTML = ficText;
+        // if (window.location.href.search(/printfic/) >= 0){
+        //     document.getElementById("fic_text").innerHTML = ficText;
+        // } else {
+        //     document.getElementById("content").innerHTML = ficText;
+        // }
+        if (text === null) {
+            document.getElementById("content").innerHTML = ficText;
+        } else {
+            return ficText;
+        }
     }
 
     /**
@@ -301,15 +333,26 @@
      * as activeFixes.
      */
     function applyTextFixes() {
+        applyTextFixesToText(null);
+    }
+
+    function applyTextFixesToText(text) {
         console.log("Started applying text fixes");
+        let tempText = text;
+
 
         // alert("Applied text fixes");
         function onGotSpacesFix(item) {
             console.log("Successfully got item.fixSpacesAroundPunctuation from storage");
             console.log("item.fixSpacesAroundPunctuation = " + item.fixSpacesAroundPunctuation)
             if (item.fixSpacesAroundPunctuation) {
-                let ficText = document.getElementById("content").innerHTML;
-                document.getElementById("content").innerHTML = fixSpacesAroundPunctuationMarks(ficText);
+                if (text === null) {
+                    let ficText = document.getElementById("content").innerHTML;
+                    document.getElementById("content").innerHTML = fixSpacesAroundPunctuationMarks(ficText);
+                } else {
+                    tempText = fixSpacesAroundPunctuationMarks(tempText);
+                }
+
             }
         }
 
@@ -325,8 +368,12 @@
             console.log("Successfully got fixDialogsPunctuation from storage");
             console.log("fixDialogsPunctuation = " + item.fixDialogsPunctuation);
             if (item.fixDialogsPunctuation) {
-                let ficText = document.getElementById("content").innerHTML;
-                document.getElementById("content").innerHTML = fixDialogsPunctuation(ficText);
+                if (text === null) {
+                    let ficText = document.getElementById("content").innerHTML;
+                    document.getElementById("content").innerHTML = fixDialogsPunctuation(ficText);
+                } else {
+                    tempText = fixDialogsPunctuation(tempText);
+                }
             }
         }
 
@@ -342,8 +389,12 @@
             console.log("Successfully got fixLapslock from storage");
             console.log("fixLapslock = " + item.fixLapslock);
             if (item.fixLapslock) {
-                let ficText = document.getElementById("content").innerHTML;
-                document.getElementById("content").innerHTML = fixLapslock(ficText);
+                if (text === null) {
+                    let ficText = document.getElementById("content").innerHTML;
+                    document.getElementById("content").innerHTML = fixLapslock(ficText);
+                } else {
+                    tempText = fixLapslock(tempText);
+                }
             }
         }
 
@@ -355,6 +406,9 @@
         let gettingLapslockFix = browser.storage.local.get("fixLapslock");
         gettingLapslockFix.then(onGotLapslockFix, onErrorLapslockFix);
         console.log("end of ApplyTextFixes function");
+        if (text !== null) {
+            return tempText;
+        }
     }
 
     /**
@@ -364,7 +418,12 @@
     function resetFicFormat() {
         function onGot(item) {
             if (ficFormatted) {
-                document.getElementById("content").innerHTML = item.ficTextSaved;
+                if (window.location.href.search(/printfic/) >= 0) {
+                    document.getElementById("fic_text").innerHTML = item.ficTextSaved;
+                } else {
+                    document.getElementById("content").innerHTML = item.ficTextSaved;
+                }
+                //document.getElementById("content").innerHTML = item.ficTextSaved;
                 console.log("Reset fic format");
             } else {
                 console.log("Fic is not formatted");
@@ -393,8 +452,8 @@
         let parameters = window.location.search;
         if (isFicbook) {
             let fic_id = currentPage.split("/")[2];
-            let url = "https://" + currentSite + "/printfic/" + fic_id + "?ficbook_plus_read_full_fic";
-            window.location = url;
+            //let url = "https://" + currentSite + "/printfic/" + fic_id + "?ficbook_plus_read_full_fic";
+            window.location = "https://www.ficbook.net/printfic/" + fic_id;
         }
     }
 
@@ -409,7 +468,16 @@
             openFullFicReader();
         } else {
             if (message.command === "formatFic") {
-                formatFic(message.formatStyle);
+                if (window.location.href.search("printfic") >= 0) {
+                    let chapters = document.getElementsByClassName("fic_chapter_text");
+                    let l = chapters.length;
+                    for (let i = 0; i < l; i++) {
+                        chapters[i].innerHTML = formatFicText(message.formatStyle, chapters[i].innerHTML);
+                        chapters[i].innerHTML = applyTextFixesToText(chapters[i].innerHTML);
+                    }
+                } else {
+                    formatFic(message.formatStyle);
+                }
             } else if (message.command === "resetFicFormat") {
                 resetFicFormat();
             }
