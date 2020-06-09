@@ -181,7 +181,7 @@ function onError(item) {
  * and add a click handler.
  * If we couldn't inject the script, handle the error.
  */
-browser.tabs.executeScript({file: "/content_scripts/ficbook_plus.js"})
+browser.tabs.executeScript({file: "/content_scripts/ficbook_enhancer.js"})
     .then(restoreMenuState)
     .then(listenForClicks)
     .catch(reportExecuteScriptError);

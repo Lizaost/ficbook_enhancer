@@ -161,8 +161,9 @@ let styles = "body{margin:0; padding:0; scroll-behavior: smooth; font-family: sa
     "" +
 
     "/* DARK THEME STYLES */" +
-    ".dark #main{background-color: #1e2022; color:#eeeeee;}" +
-    ".dark #fic_header{background-color: #303235; box-shadow: 0 0 5px 0 #111;}" +
+    "/*.dark #main{background-color: #1e2022; color:#eeeeee;}*/" +
+    ".dark #main{background-color: #333333; color:#eeeeee;}" +
+    ".dark #fic_header{background-color: #444444; /*#303235;*/ box-shadow: 0 0 5px 0 #111;}" +
     ".dark #controls_wrapper li div{border-color: #cccccc; color:#cccccc;}" +
     ".dark #font_size_custom_selected:before{ background-image: url(" + browser.extension.getURL("images/format-font-size_eee.png") + ");}" +
     ".dark #text_width_custom_selected:before{ background-image: url(" + browser.extension.getURL("images/text-width_eee.png") + ");}" +
@@ -419,7 +420,7 @@ function addFicContentPanel() {
         let openNavButton = document.createElement('div');
         openNavButton.onclick = toggleNav;
         let icon = document.createElement("img");
-        icon.src = browser.extension.getURL("icons/ficbook_plus_icon_48.png");
+        icon.src = browser.extension.getURL("icons/ficbook_enhancer_icon_48.png");
         openNavButton.appendChild(icon);
         openNavButton.id = "open_fic_contents_div";
         document.body.appendChild(openNavButton);

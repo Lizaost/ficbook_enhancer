@@ -1,11 +1,11 @@
 {
-  "description": "Adds a better auto format and full fic reader for ficbook.net",
+  "description": "Adds a better auto format and grammar fixing features for ficbook.net",
   "manifest_version": 2,
-  "name": "Ficbook+",
+  "name": "Ficbook Enhancer",
   "version": "1.0",
-  "homepage_url": "https://github.com/Lizaost/ficbook_plus",
+  "homepage_url": "https://github.com/Lizaost/ficbook_enhancer",
   "icons": {
-    "48": "icons/ficbook_plus_icon_48.png"
+    "48": "icons/ficbook_enhancer_icon_48.png"
   },
 
   "permissions": [
@@ -14,14 +14,14 @@
   ],
 
   "browser_action": {
-    "default_icon": "icons/ficbook_plus_icon_32.png",
+    "default_icon": "icons/ficbook_enhancer_icon_32.png",
     "theme_icons": [{
-      "light": "icons/ficbook_plus_icon_32.png",
-      "dark": "icons/ficbook_plus_icon_32.png",
+      "light": "icons/ficbook_enhancer_icon_32.png",
+      "dark": "icons/ficbook_enhancer_icon_32.png",
       "size": 32
     }],
-    "default_title": "Ficbook+",
-    "default_popup": "popup/fp_menu.html"
+    "default_title": "Ficbook Enhancer",
+    "default_popup": "popup/fe_menu.html"
   },
   "content_scripts": [
     {
@@ -37,7 +37,7 @@
         "*://*.ficbook.net/readfic/*"
       ],
       "js": [
-        "content_scripts/ficbook_plus.js"
+        "content_scripts/ficbook_enhancer.js"
       ]
     }
   ],
