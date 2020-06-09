@@ -121,6 +121,10 @@ function listenForClicks() {
             browser.tabs.query({active: true, currentWindow: true})
                 .then(openFullFicReader)
                 .catch(reportError);
+        } else if (e.target.id === "info_icon") {
+            showExtensionInfo();
+        } else if (e.target.id === "close-info-content-icon") {
+            hideExtensionInfo();
         }
     });
 }
@@ -133,6 +137,22 @@ function reportExecuteScriptError(error) {
     document.querySelector("#popup-content").classList.add("hidden");
     document.querySelector("#error-content").classList.remove("hidden");
     console.error(`Failed to execute ficbook_plus content script: ${error.message}`);
+}
+
+/**
+ * Display extension info message, and hide the normal UI.
+ */
+function showExtensionInfo() {
+    document.querySelector("#popup-content").classList.add("hidden");
+    document.querySelector("#info-content").classList.remove("hidden");
+}
+
+/**
+ * Hide extension info message, and display the normal UI.
+ */
+function hideExtensionInfo() {
+    document.querySelector("#info-content").classList.add("hidden");
+    document.querySelector("#popup-content").classList.remove("hidden");
 }
 
 /**

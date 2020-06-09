@@ -12,7 +12,7 @@ html, body {
     display: none;
 }
 
-#popup-content{
+#popup-content, #info-content {
     border: #76482e 2px solid;
     box-sizing: content-box;
     padding: 8px 16px;
@@ -50,7 +50,7 @@ html, body {
 }
 
 
-h1#popup-title{
+h1.popup-title {
     font-size: 18px;
     margin-top: 4px;
     width: 100%;
@@ -65,10 +65,23 @@ h1, h2, p, span{
     font-weight: normal;
 }
 
+.info-p {
+    font-size: 14px;
+    padding: 0 5px;
+}
+
 #info_icon{
     position: absolute;
     top: 16px;
     right: 16px;
+    color: #c69e6c;
+}
+
+#close-info-content-icon {
+    position: absolute;
+    top: -2px;
+    right: 18px;
+    font-size: 16px;
     color: #c69e6c;
 }
 
