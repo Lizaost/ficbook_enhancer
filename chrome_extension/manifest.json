@@ -11,10 +11,10 @@
     "scripts": [
       "content_scripts/ficbook_enhancer.js"
     ],
-    "persistent": false
+    "persistent": true
   },
-  "page_action": {
-    "default_popup": "popup/popup.html",
+  "browser_action": {
+    "default_popup": "popup/fe_menu.html",
     "default_icon": {
       "32": "images/ficbook_enhancer_icon_32.png",
       "48": "images/ficbook_enhancer_icon_48.png",
@@ -35,5 +35,10 @@
         "content_scripts/ficbook_enhancer.js"
       ]
     }
+  ],
+  "web_accessible_resources": [
+    "images/*.jpg",
+    "icons/*.png",
+    "styles/*.css"
   ]
 }

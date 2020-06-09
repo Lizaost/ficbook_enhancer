@@ -12,9 +12,13 @@ function listenForClicks() {
         let formatStyle = undefined;
 
         function formatFic(tabs) {
-            browser.tabs.sendMessage(tabs[0].id, {
-                command: "formatFic",
-                formatStyle: formatStyle
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    command: "formatFic",
+                    formatStyle: formatStyle
+                }, function (response) {
+                    console.log(response);
+                });
             });
         }
 
@@ -22,8 +26,12 @@ function listenForClicks() {
          * Change fic format back to the original one
          */
         function resetFormat(tabs) {
-            browser.tabs.sendMessage(tabs[0].id, {
-                command: "resetFicFormat",
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    command: "resetFicFormat"
+                }, function (response) {
+                    console.log(response);
+                });
             });
         }
 
@@ -31,17 +39,12 @@ function listenForClicks() {
          * Format fic text in content according to selected format style
          */
         function applyTextFixes(tabs) {
-            browser.tabs.sendMessage(tabs[0].id, {
-                command: "applyTextFixes"
-            });
-        }
-
-        /**
-         * Open full fic reader (stylized print version)
-         */
-        function openFullFicReader(tabs) {
-            browser.tabs.sendMessage(tabs[0].id, {
-                command: "openFullFicReader",
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    command: "applyTextFixes"
+                }, function (response) {
+                    console.log(response);
+                });
             });
         }
 
@@ -59,16 +62,16 @@ function listenForClicks() {
             //alert(settingName);
             switch (settingName) {
                 case "format-on-page-load":
-                    browser.storage.local.set({formatOnPageLoad: value});
+                    chrome.storage.local.set({formatOnPageLoad: value});
                     break;
                 case "fix-punctuation-spaces":
-                    browser.storage.local.set({fixSpacesAroundPunctuation: value});
+                    chrome.storage.local.set({fixSpacesAroundPunctuation: value});
                     break;
                 case "fix-dialogs-punctuation":
-                    browser.storage.local.set({fixDialogsPunctuation: value});
+                    chrome.storage.local.set({fixDialogsPunctuation: value});
                     break;
                 case "fix-lapslock":
-                    browser.storage.local.set({fixLapslock: value});
+                    chrome.storage.local.set({fixLapslock: value});
                     break;
             }
         }
@@ -87,18 +90,26 @@ function listenForClicks() {
             }
             e.target.parentElement.classList.add("active");
             formatStyle = e.target.parentElement.id.substr("format_style-".length);
-            browser.tabs.query({active: true, currentWindow: true})
-                .then(formatFic)
-                .catch(reportError);
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    command: "formatFic",
+                    formatStyle: formatStyle
+                });
+            });
+            //chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {formatFic(tabs)})
+            // .then(formatFic)
+            // .catch(reportError);
 
         } else if ((e.target.classList.contains("format_style") && e.target.classList.contains("active"))
             || (e.target.parentElement.classList.contains("format_style") &&
                 e.target.parentElement.classList.contains("active"))) {
             //alert("Clicked on active style");
             e.target.parentElement.classList.remove("active");
-            browser.tabs.query({active: true, currentWindow: true})
-                .then(resetFormat)
-                .catch(reportError);
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+                resetFormat(tabs)
+            })
+            // .then(resetFormat)
+            // .catch(reportError);
 
         } else if ((e.target.parentElement.classList.contains("auto-format-settings-item"))
             && e.target.tagName === "INPUT" && e.target.type === "checkbox") {
@@ -111,16 +122,15 @@ function listenForClicks() {
             //alert(settingItemName + " => " + state);
             saveSettingToStorage(settingItemName, state);
             //alert(settingItemName + " => " + state);
-            browser.tabs.query({active: true, currentWindow: true})
-                .then(applyTextFixes)
-                .catch(reportError);
+            //formatFic();
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+                formatFic(tabs);
+                applyTextFixes(tabs);
+            })
+            // .then(applyTextFixes)
+            // .catch(reportError);
             // alert(settingItemName);
 
-        } else if (e.target.id === "read_full_fic") {
-            //alert("Clicked on read full fic button");
-            browser.tabs.query({active: true, currentWindow: true})
-                .then(openFullFicReader)
-                .catch(reportError);
         } else if (e.target.id === "info_icon") {
             showExtensionInfo();
         } else if (e.target.id === "close-info-content-icon") {
@@ -160,12 +170,19 @@ function hideExtensionInfo() {
  */
 function restoreMenuState() {
     //alert("restoring menu state");
-    let gettingMenuState = browser.storage.local.get();
-    gettingMenuState.then(onGot, onError);
+    chrome.storage.local.get(null, function (result) {
+        if (result) {
+            onGot(result);
+        } else {
+            onError(result);
+        }
+    });
+    //gettingMenuState.then(onGot, onError);
 }
 
 function onGot(item) {
     console.log("Successfully restored menu state from storage");
+    console.log(JSON.stringify(item));
     switch (item.ficFormatStyle) {
         case "book":
             document.getElementById("format_style-book").classList.add("active");
@@ -201,7 +218,9 @@ function onError(item) {
  * and add a click handler.
  * If we couldn't inject the script, handle the error.
  */
-browser.tabs.executeScript({file: "/content_scripts/ficbook_enhancer.js"})
-    .then(restoreMenuState)
-    .then(listenForClicks)
-    .catch(reportExecuteScriptError);
+// chrome.tabs.executeScript({file: "/content_scripts/ficbook_enhancer.js"})
+//     .then(restoreMenuState)
+//     .then(listenForClicks)
+//     .catch(reportExecuteScriptError);
+restoreMenuState();
+listenForClicks(); //.catch(reportExecuteScriptError);
