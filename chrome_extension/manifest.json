@@ -1,0 +1,39 @@
+{
+  "manifest_version": 2,
+  "name": "Ficbook Enhancer",
+  "description": "Adds a better auto format and grammar fixing features for ficbook.net",
+  "version": "1.0",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "background": {
+    "scripts": [
+      "content_scripts/ficbook_enhancer.js"
+    ],
+    "persistent": false
+  },
+  "page_action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "32": "images/ficbook_enhancer_icon_32.png",
+      "48": "images/ficbook_enhancer_icon_48.png",
+      "128": "images/ficbook_enhancer_icon_128.png"
+    }
+  },
+  "icons": {
+    "32": "images/ficbook_enhancer_icon_32.png",
+    "48": "images/ficbook_enhancer_icon_48.png",
+    "128": "images/ficbook_enhancer_icon_128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.ficbook.net/readfic/*"
+      ],
+      "js": [
+        "content_scripts/ficbook_enhancer.js"
+      ]
+    }
+  ]
+}
