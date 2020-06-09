@@ -26,14 +26,6 @@
   "content_scripts": [
     {
       "matches": [
-        "*://*.ficbook.net/printfic/*"
-      ],
-      "js": [
-        "content_scripts/full_fic_reader.js"
-      ]
-    },
-    {
-      "matches": [
         "*://*.ficbook.net/readfic/*"
       ],
       "js": [
