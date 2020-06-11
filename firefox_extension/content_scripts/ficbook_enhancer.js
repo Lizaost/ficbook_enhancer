@@ -76,7 +76,6 @@
         result = regexB.exec(resText);
         while (result) {
             let index = result.index;
-            console.log(result.index, resText.slice(result.index - 2, result.index + 2));
             resText = resText.substring(0, index + 1) + " " + resText.substring(index + 1);
             result = regexB.exec(resText)
         }
@@ -215,11 +214,9 @@
         result = regex.exec(resText);
         while (result) {
             let index = result.index;
-            console.log(resText.substring(index - 20, index + 20));
             if (!resText[index + 1].match(/[\n\t]/)) {
                 console.log("added tab");
                 resText = resText.substring(0, index + 1) + "\t" + resText.substring(index + 1);
-                //resText = resText.substring(0, index + 1) + "    " + resText.substring(index + 1);
             }
             result = regex.exec(resText);
         }
@@ -236,7 +233,6 @@
     function removeParagraphIndents(text) {
         let resText = text;
         let regex = /\t/gi;
-        //let regex = / {4}/gi;
         resText = resText.replace(regex, "");
         console.log("removed paragraph indents");
         return resText;
@@ -260,12 +256,6 @@
         } else {
             ficText = text;
         }
-        // if (window.location.href.search(/printfic/) >= 0){
-        //     ficText = document.getElementById("fic_text").innerHTML;
-        // } else {
-        //     ficText = document.getElementById("content").innerHTML;
-        // }
-        console.log(ficText);
         if (formatStyle === "book" || formatStyle === "web1" || formatStyle === "web2") {
             if (!ficFormatted) {
                 if (text === null) {
@@ -297,11 +287,6 @@
                 console.log("Formatted fic with web2 style");
                 break;
         }
-        // if (window.location.href.search(/printfic/) >= 0){
-        //     document.getElementById("fic_text").innerHTML = ficText;
-        // } else {
-        //     document.getElementById("content").innerHTML = ficText;
-        // }
         if (text === null) {
             document.getElementById("content").innerHTML = ficText;
         } else {
@@ -340,8 +325,6 @@
         console.log("Started applying text fixes");
         let tempText = text;
 
-
-        // alert("Applied text fixes");
         function onGotSpacesFix(item) {
             console.log("Successfully got item.fixSpacesAroundPunctuation from storage");
             console.log("item.fixSpacesAroundPunctuation = " + item.fixSpacesAroundPunctuation)
@@ -423,7 +406,6 @@
                 } else {
                     document.getElementById("content").innerHTML = item.ficTextSaved;
                 }
-                //document.getElementById("content").innerHTML = item.ficTextSaved;
                 console.log("Reset fic format");
             } else {
                 console.log("Fic is not formatted");
@@ -452,7 +434,6 @@
         let parameters = window.location.search;
         if (isFicbook) {
             let fic_id = currentPage.split("/")[2];
-            //let url = "https://" + currentSite + "/printfic/" + fic_id + "?ficbook_plus_read_full_fic";
             window.location = "https://www.ficbook.net/printfic/" + fic_id;
         }
     }

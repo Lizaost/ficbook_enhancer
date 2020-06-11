@@ -4,13 +4,12 @@
  */
 function listenForClicks() {
     document.addEventListener("click", (e) => {
-        //alert(e);
-        //alert("ID = " + e.target.id + "\nTag = " + e.target.tagName);
+
+        let formatStyle = undefined;
+
         /**
          * Format fic text in content according to selected format style
          */
-        let formatStyle = undefined;
-
         function formatFic(tabs) {
             chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
                 chrome.tabs.sendMessage(tabs[0].id, {
@@ -59,7 +58,6 @@ function listenForClicks() {
          * Saves setting state to storage
          */
         function saveSettingToStorage(settingName, value) {
-            //alert(settingName);
             switch (settingName) {
                 case "format-on-page-load":
                     chrome.storage.local.set({formatOnPageLoad: value});
@@ -83,7 +81,6 @@ function listenForClicks() {
         if ((e.target.classList.contains("format_style") && !e.target.classList.contains("active"))
             || (e.target.parentElement.classList.contains("format_style") &&
                 !e.target.parentElement.classList.contains("active"))) {
-            //alert("Clicked on not active style");
             let activeModes = document.getElementsByClassName("active");
             if (activeModes.length >= 1) {
                 activeModes[0].classList.remove("active");
@@ -96,9 +93,6 @@ function listenForClicks() {
                     formatStyle: formatStyle
                 });
             });
-            //chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {formatFic(tabs)})
-            // .then(formatFic)
-            // .catch(reportError);
 
         } else if ((e.target.classList.contains("format_style") && e.target.classList.contains("active"))
             || (e.target.parentElement.classList.contains("format_style") &&
@@ -108,30 +102,17 @@ function listenForClicks() {
             chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
                 resetFormat(tabs)
             })
-            // .then(resetFormat)
-            // .catch(reportError);
 
         } else if ((e.target.parentElement.classList.contains("auto-format-settings-item"))
             && e.target.tagName === "INPUT" && e.target.type === "checkbox") {
-            //alert("Clicked on settings item");
-            // alert("Changing fic text fixes setting");
-            // alert(e.target.parentElement);
             let state = e.target.checked;
-            // alert("Dataset: " + e.target.dataset);
             let settingItemName = e.target.id;
-            //alert(settingItemName + " => " + state);
             saveSettingToStorage(settingItemName, state);
-            //alert(settingItemName + " => " + state);
-            //formatFic();
             chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
                 //resetFormat(tabs);
-                //formatFic(tabs);
                 formatFic(tabs);
                 applyTextFixes(tabs);
             })
-            // .then(applyTextFixes)
-            // .catch(reportError);
-            // alert(settingItemName);
 
         } else if (e.target.id === "info_icon") {
             showExtensionInfo();
@@ -171,7 +152,6 @@ function hideExtensionInfo() {
  * Restore state of control elements from storage
  */
 function restoreMenuState() {
-    //alert("restoring menu state");
     chrome.storage.local.get(null, function (result) {
         if (result) {
             onGot(result);
@@ -179,7 +159,6 @@ function restoreMenuState() {
             onError(result);
         }
     });
-    //gettingMenuState.then(onGot, onError);
 }
 
 function onGot(item) {
@@ -220,9 +199,5 @@ function onError(item) {
  * and add a click handler.
  * If we couldn't inject the script, handle the error.
  */
-// chrome.tabs.executeScript({file: "/content_scripts/ficbook_enhancer.js"})
-//     .then(restoreMenuState)
-//     .then(listenForClicks)
-//     .catch(reportExecuteScriptError);
 restoreMenuState();
-listenForClicks(); //.catch(reportExecuteScriptError);
+listenForClicks();

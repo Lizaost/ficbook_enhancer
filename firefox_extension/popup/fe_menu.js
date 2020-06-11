@@ -4,13 +4,12 @@
  */
 function listenForClicks() {
     document.addEventListener("click", (e) => {
-        //alert(e);
-        //alert("ID = " + e.target.id + "\nTag = " + e.target.tagName);
+
+        let formatStyle = undefined;
+
         /**
          * Format fic text in content according to selected format style
          */
-        let formatStyle = undefined;
-
         function formatFic(tabs) {
             browser.tabs.sendMessage(tabs[0].id, {
                 command: "formatFic",
@@ -56,7 +55,6 @@ function listenForClicks() {
          * Saves setting state to storage
          */
         function saveSettingToStorage(settingName, value) {
-            //alert(settingName);
             switch (settingName) {
                 case "format-on-page-load":
                     browser.storage.local.set({formatOnPageLoad: value});
@@ -80,7 +78,6 @@ function listenForClicks() {
         if ((e.target.classList.contains("format_style") && !e.target.classList.contains("active"))
             || (e.target.parentElement.classList.contains("format_style") &&
                 !e.target.parentElement.classList.contains("active"))) {
-            //alert("Clicked on not active style");
             let activeModes = document.getElementsByClassName("active");
             if (activeModes.length >= 1) {
                 activeModes[0].classList.remove("active");
@@ -102,22 +99,14 @@ function listenForClicks() {
 
         } else if ((e.target.parentElement.classList.contains("auto-format-settings-item"))
             && e.target.tagName === "INPUT" && e.target.type === "checkbox") {
-            //alert("Clicked on settings item");
-            // alert("Changing fic text fixes setting");
-            // alert(e.target.parentElement);
             let state = e.target.checked;
-            // alert("Dataset: " + e.target.dataset);
             let settingItemName = e.target.id;
-            //alert(settingItemName + " => " + state);
             saveSettingToStorage(settingItemName, state);
-            //alert(settingItemName + " => " + state);
             browser.tabs.query({active: true, currentWindow: true})
                 .then(applyTextFixes)
                 .catch(reportError);
-            // alert(settingItemName);
 
         } else if (e.target.id === "read_full_fic") {
-            //alert("Clicked on read full fic button");
             browser.tabs.query({active: true, currentWindow: true})
                 .then(openFullFicReader)
                 .catch(reportError);
@@ -159,7 +148,6 @@ function hideExtensionInfo() {
  * Restore state of control elements from storage
  */
 function restoreMenuState() {
-    //alert("restoring menu state");
     let gettingMenuState = browser.storage.local.get();
     gettingMenuState.then(onGot, onError);
 }
