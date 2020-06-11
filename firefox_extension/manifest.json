@@ -1,8 +1,8 @@
 {
-  "description": "Adds a better auto format and grammar fixing features for ficbook.net",
   "manifest_version": 2,
   "name": "Ficbook Enhancer",
-  "version": "1.0",
+  "description": "Автоматическое форматирование фанфиков на Книге Фанфиков.",
+  "version": "1.0.0",
   "homepage_url": "https://github.com/Lizaost/ficbook_enhancer",
   "icons": {
     "48": "icons/ficbook_enhancer_icon_48.png"

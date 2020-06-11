@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "Ficbook Enhancer",
-  "description": "Adds a better auto format and grammar fixing features for ficbook.net",
-  "version": "1.0",
+  "description": "Автоматическое форматирование фанфиков на Книге Фанфиков.",
+  "version": "1.0.0",
   "permissions": [
     "activeTab",
     "storage"
