@@ -124,6 +124,8 @@ function listenForClicks() {
             //alert(settingItemName + " => " + state);
             //formatFic();
             chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+                //resetFormat(tabs);
+                //formatFic(tabs);
                 formatFic(tabs);
                 applyTextFixes(tabs);
             })

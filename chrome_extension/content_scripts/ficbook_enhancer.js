@@ -41,8 +41,9 @@ console.log("TEST MESSAGE 0");
             }
 
             chrome.storage.local.get(["ficFormatStyle"], function (result) {
+                console.log("********" + JSON.stringify(result));
                 if (result) {
-                    onGotFormatStyle(result);
+                    formatFic(onGotFormatStyle(result));
                 } else {
                     onErrorFormatStyle(result);
                 }
@@ -60,6 +61,7 @@ console.log("TEST MESSAGE 0");
     }
 
     chrome.storage.local.get(["formatOnPageLoad"], function (result) {
+        console.log("-------" + JSON.stringify(result));
         if (result) {
             onGotFormatOnLoad(result);
         } else {
