@@ -72,15 +72,6 @@
     function fixSpacesAroundPunctuationMarks(text) {
         console.log("removing unnecessary spaces around punctuation marks");
         let resText = text;
-        //no space before period, comma, semicolon, question mark, exclamation mark and ellipsis points
-        let regexA = / [.?,!…]/gi;
-        let result = regexA.exec(resText);
-        while (result) {
-            let index = result.index;
-            console.log(result.index, resText.slice(result.index - 2, result.index + 2));
-            resText = resText.substring(0, index) + resText.substring(index + 1);
-            result = regexA.exec(resText)
-        }
 
         //A space after punctuation marks
         let regexB = /([.?,!…])\S/gi;
@@ -89,6 +80,16 @@
             let index = result.index;
             resText = resText.substring(0, index + 1) + " " + resText.substring(index + 1);
             result = regexB.exec(resText)
+        }
+
+        //no space before period, comma, semicolon, question mark, exclamation mark and ellipsis points
+        let regexA = / [.?,!…]/gi;
+        let result = regexA.exec(resText);
+        while (result) {
+            let index = result.index;
+            console.log(result.index, resText.slice(result.index - 2, result.index + 2));
+            resText = resText.substring(0, index) + resText.substring(index + 1);
+            result = regexA.exec(resText)
         }
 
         //no space before hyphen if it is after letter
@@ -148,7 +149,8 @@
     function fixDialogsPunctuation(text) {
         let textLines = text.split("\n");
         let numberOfLines = textLines.length;
-        let isDialogLineRegex = /^( )?(\-|–)( )?([a-z]|[A-Z]|[а-я]|[А-Я]).+?[.?,!…]($)/gi;
+        console.log("Lines in text : " + numberOfLines);
+        let isDialogLineRegex = /^(\t|\w)?(\-|-|–)( )?([a-z]|[A-Z]|[а-я]|[А-Я]).+?.?($)/gi;
         //For each line of text
         for (let i = 0; i < numberOfLines; i++) {
             //if it a part of dialog
@@ -158,7 +160,12 @@
 
                 //replace hyphen(-) and minus(−) with dash(—) at the start of sentence
                 //and remove initial spaces
-                textLines[i] = textLines[i].replace(/^( )*([−\-—])( )*/gi, "— ");
+                console.log(JSON.stringify(textLines[i].match(/^(\t|\w)?(\-|-|–)( )*/gi)));
+                let lineStartFixString = "";
+                if (textLines[i].startsWith("\t")) {
+                    lineStartFixString = "\t";
+                }
+                textLines[i] = textLines[i].replace(/^(\t|\w)?(\-|-|–)( )*/gi, lineStartFixString + "— ");
 
                 //(A: - B.), (- B, - a.), (- B, - a, - b)
                 //(,-) => (, - )
