@@ -141,7 +141,7 @@
         resText = resText.split("&Nbsp;").join(" ");
 
         // Replace first alphabetic character in each sentence with an uppercase version (a -> A)
-        let sentenceRegex = /([a-z]|[A-Z]|[а-я]|[А-Я]|\n).+?[.?!…](\s|$)/gi;
+        let sentenceRegex = /([a-z]|[A-Z]|[а-я]|[А-Я]|\n).+?[.?!…:](\s|$)/gi;
         resText = resText.replace(sentenceRegex, function (txt) {
             // Regex is located inside the replacer function since it should be recreated each time
             // otherwise match index is incorrect
