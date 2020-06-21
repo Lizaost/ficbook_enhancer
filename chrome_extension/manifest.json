@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Ficbook Enhancer",
   "description": "Автоматическое форматирование фанфиков на Книге Фанфиков.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "permissions": [
     "activeTab",
     "storage"
@@ -11,7 +11,7 @@
     "scripts": [
       "content_scripts/ficbook_enhancer.js"
     ],
-    "persistent": true
+    "persistent": false
   },
   "browser_action": {
     "default_popup": "popup/fe_menu.html",
@@ -38,7 +38,7 @@
   ],
   "web_accessible_resources": [
     "images/*.jpg",
-    "icons/*.png",
+    "images/*.png",
     "styles/*.css"
   ]
 }

@@ -2,24 +2,26 @@
   "manifest_version": 2,
   "name": "Ficbook Enhancer",
   "description": "Автоматическое форматирование фанфиков на Книге Фанфиков.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage_url": "https://github.com/Lizaost/ficbook_enhancer",
   "icons": {
-    "48": "icons/ficbook_enhancer_icon_48.png"
+    "32": "images/ficbook_enhancer_icon_32.png",
+    "48": "images/ficbook_enhancer_icon_48.png",
+    "128": "images/ficbook_enhancer_icon_128.png"
   },
-
   "permissions": [
     "activeTab",
     "storage"
   ],
-
   "browser_action": {
-    "default_icon": "icons/ficbook_enhancer_icon_32.png",
-    "theme_icons": [{
-      "light": "icons/ficbook_enhancer_icon_32.png",
-      "dark": "icons/ficbook_enhancer_icon_32.png",
-      "size": 32
-    }],
+    "default_icon": "images/ficbook_enhancer_icon_48.png",
+    "theme_icons": [
+      {
+        "light": "images/ficbook_enhancer_icon_48.png",
+        "dark": "images/ficbook_enhancer_icon_48.png",
+        "size": 48
+      }
+    ],
     "default_title": "Ficbook Enhancer",
     "default_popup": "popup/fe_menu.html"
   },
@@ -33,11 +35,9 @@
       ]
     }
   ],
-
   "web_accessible_resources": [
     "images/*.jpg",
-    "icons/*.png",
+    "images/*.png",
     "styles/*.css"
   ]
-
 }
