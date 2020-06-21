@@ -120,11 +120,38 @@
      */
     function fixLapslock(text) {
         let resText = text;
-        resText = text.replace(/([a-z]|[A-Z]|[а-я]|[А-Я]|\n).+?[.?!…](\s|$)/gi, function (txt) {
-            return txt.charAt(0).toUpperCase() + txt.substr(1);
+        // Replace <b> and <i> opening tags with predefined strings to preserve them from being changed to
+        // uppercase, since only sentence inside these tags should be changed
+        // String.replace function does not work in this case, so I split the text by the tag and join it
+        // using replacement string as a separator
+        resText = resText.split("<b>").join("|||||");
+        resText = resText.split("<i>").join("@@@@@");
+        resText = resText.split("&nbsp;").join(" ");
+        resText = resText.split("&Nbsp;").join(" ");
+
+        // Replace first alphabetic character in each sentence with an uppercase version (a -> A)
+        let sentenceRegex = /([a-z]|[A-Z]|[а-я]|[А-Я]|\n).+?[.?!…](\s|$)/gi;
+        resText = resText.replace(sentenceRegex, function (txt) {
+            // Regex is located inside the replacer function since it should be recreated each time
+            // otherwise match index is incorrect
+            let alphabeticCharRegex = /[a-z]|[A-Z]|[а-я]|[А-Я]/gi;
+            let re = new RegExp(String.fromCharCode(160), "gi");
+            txt = txt.replace(re, "+++++");
+            txt = txt.replace("&nbsp;", " ");
+            txt = txt.replace("&Nbsp;", " ");
+            let match = alphabeticCharRegex.exec(txt);
+            let firstAlphaCharIndex = match.index;
+            let editedLine = txt.substr(0, firstAlphaCharIndex) + txt.charAt(firstAlphaCharIndex).toUpperCase()
+                + txt.substr(firstAlphaCharIndex + 1);
+            return editedLine;
         });
-        resText = (resText.split("\n").map((txt) => (txt.charAt(0).toUpperCase() + txt.substr(1)))).join("\n");
-        let regex = /([a-z]|[A-Z]|[а-я]|[А-Я]|\n).+?[.?,!…](\s|$)/gi
+
+        // Restore replaces tags
+        resText = resText.split("|||||").join("<b>");
+        resText = resText.split("@@@@@").join("<i>");
+        resText = resText.split("&nbsp;").join(" ");
+        resText = resText.split("&Nbsp;").join(" ");
+
         console.log("Fixed lapslock");
         return resText;
     }
