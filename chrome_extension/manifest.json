@@ -4,7 +4,6 @@
   "description": "Автоматическое форматирование фанфиков на Книге Фанфиков.",
   "version": "1.0.1",
   "permissions": [
-    "activeTab",
     "storage"
   ],
   "background": {
