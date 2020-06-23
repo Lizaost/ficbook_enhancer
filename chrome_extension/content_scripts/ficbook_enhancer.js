@@ -141,11 +141,11 @@
         resText = resText.split("&Nbsp;").join(" ");
 
         // Replace first alphabetic character in each sentence with an uppercase version (a -> A)
-        let sentenceRegex = /([a-z]|[A-Z]|[а-я]|[А-Я]|\n).+?([.?!…:](\s|$|\n)|\n|$)/gi;
+        let sentenceRegex = /([a-z]|[A-Z]|[а-я]|[А-Я]|ё|Ё|\n).+?([.?!…:](\s|$|\n)|\n|$)/gi;
         resText = resText.replace(sentenceRegex, function (txt) {
             // Regex is located inside the replacer function since it should be recreated each time
             // otherwise match index is incorrect
-            let alphabeticCharRegex = /[a-z]|[A-Z]|[а-я]|[А-Я]/gi;
+            let alphabeticCharRegex = /[a-z]|[A-Z]|[а-я]|[А-Я]|ё|Ё/gi;
             let re = new RegExp(String.fromCharCode(160), "gi");
             txt = txt.replace(re, "+++++");
             txt = txt.replace("&nbsp;", " ");
