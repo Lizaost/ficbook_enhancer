@@ -219,12 +219,18 @@
         result = regex.exec(resText);
         while (result) {
             let index = result.index;
-            if (!resText[index + 2].match(/\n/)) {
-                resText = resText.substring(0, index + 1) + "\n" + resText.substring(index + 1);
+            // Do not modify text if it is almost end of file since it may cause errors on some texts.
+            if (index <= resText.length - 3) {
+                if (!resText[index + 2].match(/\n/)) {
+                    resText = resText.substring(0, index + 1) + "\n" + resText.substring(index + 1);
+                }
+            } else {
+                console.log("It is almost end of text, no empty line will be added")
             }
             result = regex.exec(resText);
         }
         console.log("added empty lines");
+        console.log(resText);
         return resText;
     }
 
@@ -248,9 +254,14 @@
         result = regex.exec(resText);
         while (result) {
             let index = result.index;
-            if (!resText[index + 1].match(/[\n\t]/)) {
-                console.log("added tab");
-                resText = resText.substring(0, index + 1) + "\t" + resText.substring(index + 1);
+            // Do not modify text if it is almost end of file since it may cause errors on some texts.
+            if (index <= resText.length - 3) {
+                if (!resText[index + 1].match(/[\n\t]/)) {
+                    console.log("added tab");
+                    resText = resText.substring(0, index + 1) + "\t" + resText.substring(index + 1);
+                }
+            } else {
+                console.log("It is almost end of file, no tab will be added")
             }
             result = regex.exec(resText);
         }
