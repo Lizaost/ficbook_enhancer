@@ -2,8 +2,8 @@
   "manifest_version": 2,
   "name": "Ficbook Enhancer",
   "description": "Автоматическое форматирование фанфиков на Книге Фанфиков.",
-  "version": "1.0.3",
-  "homepage_url": "https://github.com/Lizaost/ficbook_enhancer",
+  "version": "1.0.4",
+  "homepage_url": "https://vk.com/ficbook_enhancer_extension",
   "permissions": [
     "storage"
   ],
